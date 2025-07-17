@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    command: /entrypoint.sh
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env
+
+  celery:
+    build: .
+    command: celery -A your_project worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env
+
+  beat:
+    build: .
+    command: celery -A your_project beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: social_bot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
