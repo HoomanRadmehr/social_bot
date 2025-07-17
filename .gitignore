@@ -6,6 +6,8 @@ __pycache__/
 *.pyc
 *.swp
 .Python
+*.db
+*/migrations
 env/
 venv/
 ENV/
