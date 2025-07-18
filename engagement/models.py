@@ -14,7 +14,7 @@ class Profile(models.Model):
         ('tiktok', 'TikTok'),
     ]
 
-    username = models.CharField(max_length=100, unique=True)
+    username = models.CharField(max_length=100, db_index=True, unique=True)
     platform = models.CharField(max_length=50, choices=PLATFORM_CHOICES)
     follower_count = models.PositiveIntegerField(default=0)
     last_updated = models.DateTimeField(auto_now=True)
@@ -34,7 +34,7 @@ class Alert(models.Model):
 class FollowerCountSnapshot(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='snapshots')
     follower_count = models.PositiveIntegerField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
         ordering = ['-timestamp']
